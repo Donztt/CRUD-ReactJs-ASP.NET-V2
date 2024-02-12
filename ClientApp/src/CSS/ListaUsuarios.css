@@ -1,0 +1,25 @@
+﻿#UserList {
+    margin-top: 30px;
+}
+#UserList h3 {
+    color: azure;
+    margin: 0 auto;
+    border-bottom: 3px solid;
+    border-color: azure;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+#UserList p {
+    color: azure;
+}
+#PeopleList:hover {
+    background-color: cornflowerblue;
+}
+table {
+    background-color: none;
+    border-bottom: 1px solid;
+    border-color: azure;
+}
+#UserList th,td {
+    color: azure;
+}
