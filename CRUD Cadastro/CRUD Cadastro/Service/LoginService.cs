@@ -36,7 +36,7 @@ namespace CRUD_Cadastro.Service
 
             if (Criptografia.VerificarSenha(login.Senha, loginDTO.Senha))
             {
-                var token = CriarTokenJWT(loginDTO.Login);
+                var token = CriarTokenJWT(login.UsuarioId.ToString());
 
                 var loginAuth = new LoginAuthDTO() {
                     token = token,
@@ -60,8 +60,8 @@ namespace CRUD_Cadastro.Service
         };
 
             var token = new JwtSecurityToken(
-                issuer: "sua_issuing_authority",
-                audience: "sua_audience",
+                issuer: "IssuerTeste",
+                audience: "AudienceTeste",
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: credenciais

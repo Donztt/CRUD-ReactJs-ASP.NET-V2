@@ -26,7 +26,6 @@ namespace CRUD_Cadastro.Controllers
             _usuarioService = new UsuarioService(_context);
         }
 
-
         [HttpGet]
         public async Task<List<UsuarioDTO>> GetUsuarios()
         {

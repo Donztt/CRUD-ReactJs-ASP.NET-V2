@@ -3,6 +3,7 @@ import "../CSS/dadosUsuario.css";
 import Nav from "./Nav";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import {formatarCpf, formatarTelefone, formatarCep} from "./Utilitario"
 
 const DadosUsuario = () => {
   const { id } = useParams();
@@ -31,7 +32,6 @@ const DadosUsuario = () => {
       <div className="container emp-profile">
         <div className="profile-head">
           <h5 className="text-center">{usuario.nome}</h5>
-
           <ul className="nav nav-tabs" id="myTab" role="tablist">
             <li className="nav-item">
               <a
@@ -48,7 +48,6 @@ const DadosUsuario = () => {
             </li>
           </ul>
         </div>
-
         <div className="row">
           <div className="col-md-8">
             <div className="tab-content profile-tab" id="myTabContent">
@@ -63,7 +62,7 @@ const DadosUsuario = () => {
                     <label>CPF</label>
                   </div>
                   <div className="col-md-6">
-                    <p>{usuario.cpf}</p>
+                    <p>{formatarCpf(usuario.cpf)}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -71,7 +70,7 @@ const DadosUsuario = () => {
                     <label>Telefone</label>
                   </div>
                   <div className="col-md-6">
-                    <p>{usuario.telefone}</p>
+                    <p>{formatarTelefone(usuario.telefone)}</p>
                   </div>
                 </div>
                 <div className="row">
@@ -103,7 +102,7 @@ const DadosUsuario = () => {
                     <label>CEP</label>
                   </div>
                   <div className="col-md-6">
-                    <p>{usuario.cep}</p>
+                    <p>{formatarCep(usuario.cep)}</p>
                   </div>
                 </div>
               </div>

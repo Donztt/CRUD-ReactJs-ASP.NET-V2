@@ -3,6 +3,7 @@ import Nav from "./Nav";
 import "../CSS/ListaUsuarios.css";
 import { Fade } from "react-reveal";
 import axios from "axios";
+import {formatarCpf, formatarTelefone} from "./Utilitario"
 
 const ListaUsuarios = () => {
   const [pessoas, setPessoas] = useState([]);
@@ -55,11 +56,11 @@ const ListaUsuarios = () => {
                       onClick={(id) => HandleChangeUser(Pessoa.id)}
                     >
                       <td>{Pessoa.nome}</td>
-                      <td>{Pessoa.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}</td>
+                      <td>{formatarCpf(Pessoa.cpf)}</td>
                       <td>{Pessoa.cidade}</td>
                       <td>{Pessoa.estado}</td>
                       <td>{Pessoa.endereco}</td>
-                      <td>{Pessoa.telefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')}</td>
+                      <td>{formatarTelefone(Pessoa.telefone)}</td>
                     </tr>
                   ))}
                 </tbody>
