@@ -58,7 +58,7 @@ const Login = () => {
     };
 
     await axios.post(baseUrl + "/api/Login/Auth/", loginCredentials).then((loginRequest) => {
-      if (loginRequest.data === null) {
+      if (!loginRequest.data) {
         setMensagemSistema({
           mensagemTexto: "Usuário ou senha inválido(s)",
           exibirMensagem: true,

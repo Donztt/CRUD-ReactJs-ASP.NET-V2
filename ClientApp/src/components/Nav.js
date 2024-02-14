@@ -12,6 +12,8 @@ const Nav = () => {
   }, []);
 
   const validaToken = async () => {
+    if(!localStorage.getItem('token')) return;
+    
     await axiosAuth
       .get("/Token")
       .then((token) => setAuthId(token.data))

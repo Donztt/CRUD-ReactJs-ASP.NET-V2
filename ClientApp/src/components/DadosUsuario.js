@@ -29,6 +29,14 @@ const DadosUsuario = () => {
         exibirMensagem: false,
         temErro: false,
       });
+    }).catch((err) => {
+        setMensagemSistema({
+            mensagemTexto: "Usuário inexistente",
+            exibirMensagem: false,
+            temErro: true,
+          });
+          localStorage.removeItem('token');
+          window.location.href = "/";
     });
   };
 

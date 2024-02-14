@@ -56,7 +56,7 @@ namespace CRUD_Cadastro.Service
             await _context.SaveChangesAsync();
         }
 
-        public async Task ExcluirUsuario(int id)
+        public async Task ExcluirUsuario(Guid id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             if (usuario != null)

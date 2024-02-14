@@ -58,7 +58,7 @@ namespace CRUD_Cadastro.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task DeletarUsuario(int id)
+        public async Task DeletarUsuario(Guid id)
         {
             await _usuarioService.ExcluirUsuario(id);
         }
