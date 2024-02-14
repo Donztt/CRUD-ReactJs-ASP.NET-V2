@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using CRUD_Cadastro.DTO;
 using CRUD_Cadastro.Settings;
+using CRUD_Cadastro.Util;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -19,24 +24,27 @@ namespace CRUD_Cadastro.Service
             _context = context;
         }
         private readonly string chaveSecreta = "chaveUltraSecretaParaFinsDeEstudo";
-        // Substitua 'sua_chave_secreta_super_secreta' por uma chave secreta real e segura em um ambiente de produção.
 
-        public string AutenticarUsuario(LoginDTO loginDTO)
+        public async Task<LoginAuthDTO> AutenticarUsuario(LoginDTO loginDTO)
         {
-            // Aqui você faria a lógica real de autenticação, verificando as credenciais do usuário em um banco de dados, por exemplo.
-            // Neste exemplo, apenas usaremos credenciais fixas para ilustrar o processo.
+            var login = await _context.Login.SingleOrDefaultAsync(l => l.LoginNome == loginDTO.Login);
 
-            if (loginDTO.Login == "usuario_demo" && loginDTO.Senha == "senha_demo")
+            if (login == null)
             {
-                // Usuário autenticado com sucesso
-
-                // Criar token JWT
-                var token = CriarTokenJWT(loginDTO.Login);
-
-                return token;
+                return null;
             }
 
-            // Usuário não autenticado
+            if (Criptografia.VerificarSenha(login.Senha, loginDTO.Senha))
+            {
+                var token = CriarTokenJWT(loginDTO.Login);
+
+                var loginAuth = new LoginAuthDTO() {
+                    token = token,
+                    UsuarioId = login.UsuarioId
+                };
+
+                return loginAuth;
+            }
             return null;
         }
 

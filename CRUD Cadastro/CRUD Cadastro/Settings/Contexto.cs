@@ -16,5 +16,13 @@ namespace CRUD_Cadastro.Settings
         
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Login> Login { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Usuario>()
+                .HasOne(l => l.login)
+                .WithOne(u => u.usuario)
+                .HasForeignKey<Login>(l => l.UsuarioId);
+        }
     }
 }

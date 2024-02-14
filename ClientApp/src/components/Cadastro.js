@@ -4,6 +4,7 @@ import Nav from "./Nav";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Erro from "./MensagemSistema";
+import InputMask from "react-input-mask";
 
 const Cadastro = () => {
   const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -25,18 +26,6 @@ const Cadastro = () => {
   });
 
   const Cadastrar = async () => {
-    const credentials = {
-      login: login,
-      senha: senha,
-      nome: nome,
-      cpf: cpf,
-      cep: cep,
-      cidade: cidade,
-      estado: estado,
-      endereco: endereco,
-      telefone: telefone,
-    };
-    console.log(credentials);
     if (
       nome === "" ||
       cpf === "" ||
@@ -51,17 +40,30 @@ const Cadastro = () => {
       });
       return;
     }
+
+    const credentials = {
+      login: login,
+      senha: senha,
+      nome: nome,
+      cpf: cpf,
+      cep: cep,
+      cidade: cidade,
+      estado: estado,
+      endereco: endereco,
+      telefone: telefone,
+    };
     await axios.post(baseUrl + "/api/Usuario/", credentials).then((data) => {
       setMensagemSistema({
         mensagemTexto: "Usuário criado com sucesso!",
         exibirMensagem: true,
         temErro: false,
       });
+      window.location.href = "/";
     });
   };
 
   const buscarCep = async (cep) => {
-    if (cep.length < 8) {
+    if (cep.length !== 8) {
       return null;
     }
     await axios
@@ -117,20 +119,18 @@ const Cadastro = () => {
                         placeholder="Nome *"
                         defaultValue={nome}
                         onChange={(e) => setNome(e.target.value)}
-                        required
                       />
                     </div>
                     <div className="form-group">
-                      <input
-                        type="text"
-                        minLength="11"
-                        maxLength="11"
+                      <InputMask
                         className="form-control"
-                        name="cpf"
+                        mask="999.999.999-99"
+                        maskChar={null}
                         placeholder="CPF *"
-                        defaultValue={cpf}
-                        onChange={(e) => setCpf(e.target.value)}
-                        required
+                        value={cpf}
+                        onChange={(e) =>
+                          setCpf(e.target.value.replace(/\D/g, ""))
+                        }
                       />
                     </div>
                     <div className="form-group">
@@ -141,7 +141,6 @@ const Cadastro = () => {
                         placeholder="Usuario *"
                         defaultValue={login}
                         onChange={(e) => setLogin(e.target.value)}
-                        required
                       />
                     </div>
                     <div className="form-group">
@@ -152,22 +151,20 @@ const Cadastro = () => {
                         placeholder="Senha *"
                         defaultValue={senha}
                         onChange={(e) => setSenha(e.target.value)}
-                        required
                       />
                     </div>
                   </div>
                   <div className="col-md-6">
                     <div className="form-group">
-                      <input
-                        type="text"
-                        minLength="8"
-                        maxLength="8"
+                      <InputMask
                         className="form-control"
-                        name="cep"
+                        mask="99999-999"
+                        maskChar={null}
                         placeholder="CEP *"
-                        defaultValue={cep}
-                        onChange={(e) => setCep(e.target.value)}
-                        required
+                        value={cep}
+                        onChange={(e) =>
+                          setCep(e.target.value.replace(/\D/g, ""))
+                        }
                       />
                     </div>
                     <div className="form-group">
@@ -201,21 +198,21 @@ const Cadastro = () => {
                       />
                     </div>
                     <div className="form-group">
-                      <input
-                        type="text"
-                        minLength="11"
-                        maxLength="11"
-                        name="cel"
+                      <InputMask
                         className="form-control"
+                        mask="(99) 99999-9999"
+                        maskChar={null}
                         placeholder="Telefone"
-                        defaultValue={telefone}
-                        onChange={(e) => setTelefone(e.target.value)}
+                        value={telefone}
+                        onChange={(e) =>
+                          setTelefone(e.target.value.replace(/\D/g, ""))
+                        }
                       />
                     </div>
                   </div>
                   <input
                     type="button"
-                    className="btnRegister"
+                    className="btnRegister w-100"
                     onClick={Cadastrar}
                     value="Cadastrar"
                   />

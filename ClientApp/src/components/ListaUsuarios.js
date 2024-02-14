@@ -1,7 +1,7 @@
 ﻿import React, { useState, useEffect } from "react";
 import Nav from "./Nav";
 import "../CSS/ListaUsuarios.css";
-import Fade from "react-reveal/Fade";
+import { Fade } from "react-reveal";
 import axios from "axios";
 
 const ListaUsuarios = () => {
@@ -13,15 +13,16 @@ const ListaUsuarios = () => {
     getPessoas();
   }, []);
 
-  const getPessoas = async () =>{
-    await axios.get(baseUrl + "/api/Usuario")
-    .then((response) => {
-      setPessoas(response.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }
+  const getPessoas = async () => {
+    await axios
+      .get(baseUrl + "/api/Usuario")
+      .then((response) => {
+        setPessoas(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const HandleChangeUser = (id) => {
     window.location.href = "/AlteracaoDeDados/" + id;
@@ -30,40 +31,41 @@ const ListaUsuarios = () => {
   return (
     <div>
       <Nav />
-      <div className="container-md" id="UserList">
+      <div className="container-md text-center" id="UserList">
         <h3>Usuários cadastrados</h3>
         <div>
-          <Fade top>
-            <div id="tableItens">
-              <table className="table" aria-labelledby="tabelLabel">
-                <thead>
-                  <tr>
-                    <th>NOME</th>
-                    <th>CPF</th>
-                    <th>CIDADE</th>
-                    <th>ESTADO</th>
-                    <th>ENDERECO</th>
-                    <th>TELEFONE</th>
-                  </tr>
-                </thead>
+          <div id="tableItens">
+            <table className="table" aria-labelledby="tabelLabel">
+              <thead>
+                <tr>
+                  <th>NOME</th>
+                  <th>CPF</th>
+                  <th>CIDADE</th>
+                  <th>ESTADO</th>
+                  <th>ENDERECO</th>
+                  <th>TELEFONE</th>
+                </tr>
+              </thead>
+              <Fade left cascade>
                 <tbody>
                   {pessoas.map((Pessoa) => (
                     <tr
+                      id="userItem"
                       key={Pessoa.id}
                       onClick={(id) => HandleChangeUser(Pessoa.id)}
                     >
                       <td>{Pessoa.nome}</td>
-                      <td>{Pessoa.cpf}</td>
+                      <td>{Pessoa.cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')}</td>
                       <td>{Pessoa.cidade}</td>
                       <td>{Pessoa.estado}</td>
                       <td>{Pessoa.endereco}</td>
-                      <td>{Pessoa.telefone}</td>
+                      <td>{Pessoa.telefone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')}</td>
                     </tr>
                   ))}
                 </tbody>
-              </table>
-            </div>
-          </Fade>
+              </Fade>
+            </table>
+          </div>
         </div>
         <p>
           *Clique sobre o item que deseja alterar ou excluir da lista de

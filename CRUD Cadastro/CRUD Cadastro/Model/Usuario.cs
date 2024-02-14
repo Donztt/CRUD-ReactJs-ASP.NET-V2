@@ -10,7 +10,7 @@ namespace CRUD_Cadastro.Model
     public class Usuario
     {
         [Column("ID")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Column("NOME")]
         public string Nome { get; set; }
         [Column("CEP")]
@@ -25,5 +25,7 @@ namespace CRUD_Cadastro.Model
         public string Endereco { get; set; }
         [Column("TELEFONE")]
         public string Telefone { get; set; }
+
+        public Login login { get; set; }
     }
 }

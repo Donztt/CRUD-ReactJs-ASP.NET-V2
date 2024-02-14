@@ -10,12 +10,13 @@ namespace CRUD_Cadastro.Model
     public class Login
     {
         [Column("ID")]
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         [Column("LOGIN")]
         public string LoginNome { get; set; }
         [Column("SENHA")]
         public string Senha { get; set; }
         [Column("USUARIO_ID")]
-        public int Usuario_id { get; set; }
+        public Guid UsuarioId { get; set; }
+        public Usuario usuario { get; set; }
     }
 }

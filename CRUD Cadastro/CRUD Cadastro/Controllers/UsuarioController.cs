@@ -34,7 +34,7 @@ namespace CRUD_Cadastro.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UsuarioDTO>> GetUsuarioById(int id)
+        public async Task<ActionResult<UsuarioDTO>> GetUsuarioById(Guid id)
         {
             var Pessoa = await _usuarioService.ObterUsuarioPorId(id);
 
@@ -46,14 +46,14 @@ namespace CRUD_Cadastro.Controllers
             return Pessoa;
         }
 
-        [HttpPut("{id}")]
-        public async Task AtualizarUsuario(int id,[FromBody]UsuarioDTO usuarioDTO)
+        [HttpPut()]
+        public async Task AtualizarUsuario([FromBody]UsuarioDTO usuarioDTO)
         {
-           await _usuarioService.AtualizarUsuario(id ,usuarioDTO);
+           await _usuarioService.AtualizarUsuario(usuarioDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> AdicionarUsuario([FromBody] UsuarioDTO usuarioDTO)
+        public async Task<ActionResult<Guid>> AdicionarUsuario([FromBody] UsuarioDTO usuarioDTO)
         {
             return await _usuarioService.AdicionarUsuario(usuarioDTO);
         }

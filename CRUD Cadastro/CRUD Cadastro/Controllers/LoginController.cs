@@ -26,10 +26,10 @@ namespace CRUD_Cadastro.Controllers
             _loginService = new LoginService(_context);
         }
 
-        [HttpGet]
-        public string AutenticarUsuario([FromBody] LoginDTO loginDTO)
+        [HttpPost("Auth")]
+        public async Task<LoginAuthDTO> AutenticarUsuario([FromBody] LoginDTO loginDTO)
         {
-            return _loginService.AutenticarUsuario(loginDTO);
+            return await _loginService.AutenticarUsuario(loginDTO);
         }
     }
 }

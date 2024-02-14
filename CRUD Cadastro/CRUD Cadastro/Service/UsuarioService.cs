@@ -1,7 +1,9 @@
 ﻿using CRUD_Cadastro.DTO;
 using CRUD_Cadastro.Model;
 using CRUD_Cadastro.Settings;
+using CRUD_Cadastro.Util;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,13 +25,13 @@ namespace CRUD_Cadastro.Service
             return usuarios.Select(usuario => ConverterParaDTO(usuario)).ToList();
         }
 
-        public async Task<UsuarioDTO> ObterUsuarioPorId(int id)
+        public async Task<UsuarioDTO> ObterUsuarioPorId(Guid id)
         {
             var usuario = await _context.Usuarios.FindAsync(id);
             return usuario != null ? ConverterParaDTO(usuario) : null;
         }
 
-        public async Task<int> AdicionarUsuario(UsuarioDTO usuarioDTO)
+        public async Task<Guid> AdicionarUsuario(UsuarioDTO usuarioDTO)
         {
             var usuario = ConverterParaEntidade(usuarioDTO);
             var usuarioNovo = _context.Usuarios.Add(usuario);
@@ -37,8 +39,8 @@ namespace CRUD_Cadastro.Service
             var loginCriado = new Login()
             {
                 LoginNome = usuarioDTO.Login,
-                Senha = usuarioDTO.Senha,
-                Usuario_id = usuarioNovo.Entity.Id
+                Senha = Criptografia.HashSenha(usuarioDTO.Senha),
+                UsuarioId = usuarioNovo.Entity.Id
             };
 
             _context.Login.Add(loginCriado);
@@ -47,10 +49,9 @@ namespace CRUD_Cadastro.Service
             return usuario.Id;
         }
 
-        public async Task AtualizarUsuario(int id, UsuarioDTO usuarioDTO)
+        public async Task AtualizarUsuario(UsuarioDTO usuarioDTO)
         {
             var usuario = ConverterParaEntidade(usuarioDTO);
-            usuario.Id = id;
             _context.Entry(usuario).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }

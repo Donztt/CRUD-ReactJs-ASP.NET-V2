@@ -1,8 +1,10 @@
-﻿namespace CRUD_Cadastro.DTO
+﻿using System;
+
+namespace CRUD_Cadastro.DTO
 {
     public class UsuarioDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Login { get; set; }
         public string Senha { get; set; }
         public string Nome { get; set; }

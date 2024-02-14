@@ -1,101 +1,221 @@
-﻿import React, { Component } from "react";
-import '../CSS/AlteracaoDados.css';
-import Nav from './Nav'
-import Zoom from 'react-reveal/Zoom';
+﻿import React, { useState, useEffect } from "react";
+import "../CSS/AlteracaoDados.css";
+import Nav from "./Nav";
+import axios from "axios";
+import Erro from "./MensagemSistema";
+import { Fade, Zoom } from "react-reveal";
+import { useParams } from "react-router-dom";
+import InputMask from "react-input-mask";
 
-class AlteracaoDados extends Component {
-    static displayName = "Pessoas";
+const AlteracaoDados = () => {
+  const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
-    constructor() {
-        super();
-        this.state = { pessoa: [] };
-        this.handleEdit = this.handleEdit.bind(this);
+  const { id } = useParams();
+  const [nome, setNome] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [cep, setCep] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [estado, setEstado] = useState("");
+  const [endereco, setEndereco] = useState("");
+  const [telefone, setTelefone] = useState("");
+
+  const [mensagemSistema, setMensagemSistema] = useState({
+    mensagemTexto: "",
+    exibirMensagem: false,
+    temErro: false,
+  });
+
+  useEffect(() => {
+    CarregarUsuario();
+  }, []);
+
+  const CarregarUsuario = async () => {
+    await axios.get(baseUrl + "/api/Usuario/" + id).then((user) => {
+      setCep(user.data.cep);
+      setCidade(user.data.cidade);
+      setCpf(user.data.cpf);
+      setEndereco(user.data.endereco);
+      setEstado(user.data.estado);
+      setNome(user.data.nome);
+      setTelefone(user.data.telefone);
+
+      setMensagemSistema({
+        mensagemTexto: "Usuário carregado com sucesso",
+        exibirMensagem: true,
+        temErro: false,
+      });
+    });
+  };
+
+  const handleEdit = async () => {
+    if (!window.confirm("Você deseja realmente alterar os dados?")) {
+      return;
     }
 
-    componentDidMount() {
-        this.ChargePeople();
-    }
+    const credentials = {
+      id: id,
+      nome: nome,
+      cpf: cpf,
+      cep: cep,
+      cidade: cidade,
+      estado: estado,
+      endereco: endereco,
+      telefone: telefone,
+    };
 
-    async ChargePeople() {
-        var id = this.props.match.params["id"];
-        const response = await fetch('api/Pessoa/' + id);
-        const dataz = await response.json();
-        this.setState({ pessoa: dataz });
-    }
+    axios.put(baseUrl + "/api/Usuario/", credentials).then(() => {
+      setMensagemSistema({
+        mensagemTexto: "Usuário alterado com sucesso!",
+        exibirMensagem: true,
+        temErro: false,
+      });
+      window.location.href = "/";
+    }).catch((err)=>{
+      setMensagemSistema({
+        mensagemTexto: "Ocorreu um erro ao alterar o usuário: " + err,
+        exibirMensagem: true,
+        temErro: true,
+      });
+    });
+  };
 
-    editScreen() {
-        return (
-            <div>
-                <Nav />
-                <div className="container-md">
-                    <div>
-                        <form onSubmit={this.handleEdit}>
-                            <div id="textFields">
-                                <h3>Dados do Usuário</h3>
-                                <div className="row align-items-center">
-                                    <div className="col">
-                                        <input className="form-control" id="NomeCampo" type="hidden" name="id" placeholder="id" defaultValue={this.state.pessoa.id} />
-                                        <input className="form-control" id="NomeCampo" type="text" name="nome" placeholder="Nome" defaultValue={this.state.pessoa.nome} required />
-                                        <input className="form-control" id="CPFCampo" type="text" name="cpf" minlength="11" maxlength="11" placeholder="CPF" defaultValue={this.state.pessoa.cpf} required />
-                                        <input className="form-control" id="TelCampo" type="text" name="cel" minlength="10" maxlength="10" placeholder="Telefone" defaultValue={this.state.pessoa.cel} />
-                                    </div>
-                                </div>
-                                <div className="row align-items-center">
-                                    <div className="col">
-                                        <div id="buttons">
-                                            <Zoom bottom>
-                                                <button type="submit" className="btn btn-primary" >Alterar Dados</button>
-                                                <button type="button" className="btn btn-danger" onClick={(id) => HandleDeleteItem(this.state.pessoa.id)} >Deletar Usuário</button>
-                                            </Zoom>
-                                        </div>
-                                    </div>
-                                    <div className="col">
-                                        <input className="form-control" id="CEPCampo" type="text" name="cep" placeholder="CEP" defaultValue={this.state.pessoa.cep} />
-                                        <input className="form-control" id="enderecoCampo" type="text" name="endereco" placeholder="Endereco" defaultValue={this.state.pessoa.endereco} />
-                                        <input className="form-control" id="CidadeCampo" type="text" name="cidade" placeholder="Cidade" defaultValue={this.state.pessoa.cidade} />
-                                        <input className="form-control" id="EstadoCampo" type="text" name="estado" placeholder="Estado" defaultValue={this.state.pessoa.estado} />
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        )
-    }
-
-    render() {
-        let editScreenv = this.editScreen();
-
-        return (
-            <div>
-                {editScreenv}
-            </div>
-        )
-    }
-
-    handleEdit(event) {
-        if (!window.confirm("Você deseja realmente alterar os dados?")) {
-            return;
-        }
-        event.preventDefault();
-        const data = new FormData(event.target);
-
-        fetch('api/Pessoa/' + this.state.pessoa.id, { method: 'PUT', body: data })
-        window.location.href = "/";
-    }
-}
-
-function HandleDeleteItem(id) {
+  const HandleDeleteItem = async () => {
     if (!window.confirm("Você deseja realmente deletar este usuário?")) {
-        return;
+      return;
     }
-    fetch('api/Pessoa/' + id, { method: 'delete' })
-        .then(json => {
-            fetch('api/Login/' + id, { method: 'delete' })
-        })
-            window.location.href = "/";
-            alert('Usuário deletado com Sucesso!');
-}
+    await axios.delete(baseUrl + "/api/Usuario/" + id).then(() => {
+      setMensagemSistema({
+        mensagemTexto: "Usuário deletado com sucesso!",
+        exibirMensagem: true,
+        temErro: false,
+      });
+      window.location.href = "/";
+    }).catch((err)=>{
+      setMensagemSistema({
+        mensagemTexto: "Ocorreu um erro ao deletar o usuário: " + err,
+        exibirMensagem: true,
+        temErro: true,
+      });
+    });
+  };
 
-export default AlteracaoDados
+  return (
+    <div>
+      <div>
+        <Nav />
+        <div className="container-md">
+          <div>
+            <div id="textFields">
+              <h3 className="text-center">Dados do Usuário</h3>
+              <div className="row align-items-center">
+                <div className="col">
+                  <input
+                    className="form-control"
+                    id="NomeCampo"
+                    type="text"
+                    name="nome"
+                    placeholder="Nome"
+                    defaultValue={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                    required
+                  />
+                  <InputMask
+                    className="form-control"
+                    mask="999.999.999-99"
+                    maskChar={null}
+                    placeholder="CPF"
+                    value={cpf}
+                    onChange={(e) => setCpf(e.target.value.replace(/\D/g, ""))}
+                    required
+                  />
+                  <InputMask
+                    className="form-control"
+                    mask="(99) 99999-9999"
+                    maskChar={null}
+                    placeholder="Telefone"
+                    value={telefone}
+                    onChange={(e) =>
+                      setTelefone(e.target.value.replace(/\D/g, ""))
+                    }
+                  />
+                </div>
+                <div className="col">
+                  <InputMask
+                    className="form-control"
+                    mask="99999-999"
+                    maskChar={null}
+                    placeholder="CEP"
+                    value={cep}
+                    onChange={(e) => setCep(e.target.value.replace(/\D/g, ""))}
+                    required
+                  />
+                  <input
+                    className="form-control"
+                    id="enderecoCampo"
+                    type="text"
+                    name="endereco"
+                    placeholder="Endereco"
+                    defaultValue={endereco}
+                    onChange={(e) => setEndereco(e.target.value)}
+                  />
+                  <input
+                    className="form-control"
+                    id="CidadeCampo"
+                    type="text"
+                    name="cidade"
+                    placeholder="Cidade"
+                    defaultValue={cidade}
+                    onChange={(e) => setCidade(e.target.value)}
+                  />
+                  <input
+                    className="form-control"
+                    id="EstadoCampo"
+                    type="text"
+                    name="estado"
+                    placeholder="Estado"
+                    defaultValue={estado}
+                    onChange={(e) => setEstado(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="row align-items-center">
+                <div className="col">
+                  <Zoom>
+                    <button
+                      type="button"
+                      className="btn btn-primary w-100"
+                      onClick={handleEdit}
+                    >
+                      Alterar Usuário
+                    </button>
+                  </Zoom>
+                </div>
+                <div className="col">
+                  <Zoom>
+                    <button
+                      type="button"
+                      className="btn btn-danger w-100"
+                      onClick={HandleDeleteItem}
+                    >
+                      Deletar Usuário
+                    </button>
+                  </Zoom>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Erro
+        mensagem={mensagemSistema.mensagemTexto}
+        onClose={() =>
+          setMensagemSistema({ ...mensagemSistema, exibirMensagem: false })
+        }
+        onExibirChange={mensagemSistema.exibirMensagem}
+        temErro={mensagemSistema.temErro}
+      />
+    </div>
+  );
+};
+
+export default AlteracaoDados;

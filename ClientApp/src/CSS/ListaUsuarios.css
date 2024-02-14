@@ -12,7 +12,7 @@
 #UserList p {
     color: azure;
 }
-#PeopleList:hover {
+#userItem:hover {
     background-color: cornflowerblue;
 }
 table {
