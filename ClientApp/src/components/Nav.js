@@ -7,8 +7,6 @@ import axiosAuth from "../tools/axiosAuth";
 const Nav = () => {
   const [authId, setAuthId] = useState(null);
 
-  const baseUrl = process.env.REACT_APP_BACKEND_URL;
-
   useEffect(() => {
     validaToken();
   }, []);

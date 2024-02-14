@@ -9,8 +9,8 @@ import InputMask from "react-input-mask";
 const Cadastro = () => {
   const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
-  const [login, setLogin] = useState("");
-  const [senha, setSenha] = useState("");
+  const [loginC, setLoginC] = useState("");
+  const [senhaC, setSenhaC] = useState("");
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
   const [cep, setCep] = useState("");
@@ -29,8 +29,8 @@ const Cadastro = () => {
     if (
       nome === "" ||
       cpf === "" ||
-      login === "" ||
-      senha === "" ||
+      loginC === "" ||
+      senhaC === "" ||
       cep === ""
     ) {
       setMensagemSistema({
@@ -42,8 +42,8 @@ const Cadastro = () => {
     }
 
     const credentials = {
-      login: login,
-      senha: senha,
+      login: loginC,
+      senha: senhaC,
       nome: nome,
       cpf: cpf,
       cep: cep,
@@ -139,8 +139,8 @@ const Cadastro = () => {
                         className="form-control"
                         name="loginNome"
                         placeholder="Usuario *"
-                        defaultValue={login}
-                        onChange={(e) => setLogin(e.target.value)}
+                        defaultValue={loginC}
+                        onChange={(e) => setLoginC(e.target.value)}
                       />
                     </div>
                     <div className="form-group">
@@ -149,8 +149,8 @@ const Cadastro = () => {
                         className="form-control"
                         name="senha"
                         placeholder="Senha *"
-                        defaultValue={senha}
-                        onChange={(e) => setSenha(e.target.value)}
+                        defaultValue={senhaC}
+                        onChange={(e) => setSenhaC(e.target.value)}
                       />
                     </div>
                   </div>

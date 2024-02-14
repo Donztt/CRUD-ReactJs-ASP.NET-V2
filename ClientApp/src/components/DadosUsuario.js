@@ -3,7 +3,8 @@ import "../CSS/dadosUsuario.css";
 import Nav from "./Nav";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import {formatarCpf, formatarTelefone, formatarCep} from "./Utilitario"
+import { formatarCpf, formatarTelefone, formatarCep } from "./Utilitario";
+import Erro from "./MensagemSistema";
 
 const DadosUsuario = () => {
   const { id } = useParams();
@@ -17,13 +18,32 @@ const DadosUsuario = () => {
   });
 
   useEffect(() => {
-    ChargePeople();
+    carregarUsuario();
   }, []);
 
-  const ChargePeople = async () => {
+  const carregarUsuario = async () => {
     await axios.get(baseUrl + "/api/Usuario/" + id).then((user) => {
       setUsuario(user.data);
+      setMensagemSistema({
+        mensagemTexto: "Dados carregados!",
+        exibirMensagem: false,
+        temErro: false,
+      });
     });
+  };
+
+  const logout = () => {
+    if (!window.confirm("Deseja realmente dar logout?")) {
+      return;
+    }
+
+    localStorage.removeItem("token");
+    setMensagemSistema({
+      mensagemTexto: "Logout realizado com sucesso",
+      exibirMensagem: false,
+      temErro: false,
+    });
+    window.location.href = "/";
   };
 
   return (
@@ -109,7 +129,22 @@ const DadosUsuario = () => {
             </div>
           </div>
         </div>
+      <input
+        type="button"
+        className="btn btn-danger btn-md mt-5"
+        id="LoginButton"
+        value="Logout"
+        onClick={logout}
+      />
       </div>
+      <Erro
+        mensagem={mensagemSistema.mensagemTexto}
+        onClose={() =>
+          setMensagemSistema({ ...mensagemSistema, exibirMensagem: false })
+        }
+        onExibirChange={mensagemSistema.exibirMensagem}
+        temErro={mensagemSistema.temErro}
+      />
     </div>
   );
 };
